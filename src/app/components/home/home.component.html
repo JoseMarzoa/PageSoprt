@@ -45,10 +45,8 @@
   <section class="py-16 bg-theme-background">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold text-center text-theme-text mb-12">Productos Destacados</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <app-product-card [product]="featuredProducts[0]"></app-product-card>
-        <app-product-card [product]="featuredProducts[1]"></app-product-card>
-        <app-product-card [product]="featuredProducts[2]"></app-product-card>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <app-product-card *ngFor="let producto of productosDestacados" [producto]="producto"></app-product-card>
       </div>
       <div class="text-center mt-12">
         <a routerLink="/productos" class="btn-primary px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105">
@@ -103,11 +101,8 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <app-product-card 
-          *ngFor="let product of bestSellers" 
-          [product]="product">
-        </app-product-card>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <app-product-card *ngFor="let producto of masVendidos" [producto]="producto"></app-product-card>
       </div>
     </div>
   </section>

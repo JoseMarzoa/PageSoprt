@@ -1,1 +1,30 @@
 /* Navbar specific styles */ 
+
+@media (max-width: 768px) {
+  .md\\:hidden {
+    display: block;
+  }
+  #navbar-sticky {
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+  }
+  #navbar-sticky ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  #navbar-sticky ul li {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+  #navbar-sticky ul li:last-child {
+    border-bottom: none;
+  }
+  #navbar-sticky ul li a {
+    padding: 1rem;
+    color: var(--color-text);
+  }
+  #navbar-sticky ul li a:hover, #navbar-sticky ul li a.text-theme-primary {
+    background-color: var(--color-background);
+  }
+} 

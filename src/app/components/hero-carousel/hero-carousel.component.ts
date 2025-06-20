@@ -1,93 +1,63 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-interface CarouselSlide {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  buttonText: string;
-  buttonLink: string;
-}
-
 @Component({
   selector: 'app-hero-carousel',
   templateUrl: './hero-carousel.component.html',
   styleUrls: ['./hero-carousel.component.css']
 })
 export class HeroCarouselComponent implements OnInit, OnDestroy {
-  slides: CarouselSlide[] = [];
-  currentSlide = 0;
-  private interval: any;
+  slides = [
+    {
+      image: 'assets/images/hero-1.jpg',
+      title: 'Colección de Verano',
+      subtitle: 'Estilo y rendimiento bajo el sol',
+      description: 'Descubre nuestra nueva línea de ropa deportiva diseñada para mantenerte fresco y cómodo.',
+      buttonText: 'Explorar ahora'
+    },
+    {
+      image: 'assets/images/hero-2.jpg',
+      title: 'Equipamiento para Correr',
+      subtitle: 'Supera tus límites',
+      description: 'Todo lo que necesitas para llevar tu carrera al siguiente nivel.',
+      buttonText: 'Ver productos'
+    },
+    {
+      image: 'assets/images/hero-3.jpg',
+      title: 'Comodidad y Estilo',
+      subtitle: 'Ropa para el día a día',
+      description: 'Diseños versátiles que te acompañan del gimnasio a la calle.',
+      buttonText: 'Descubrir más'
+    }
+  ];
 
-  ngOnInit() {
-    this.loadSlides();
-    this.startAutoPlay();
+  currentIndex = 0;
+  intervalId: any;
+
+  ngOnInit(): void {
+    this.startCarousel();
   }
 
-  ngOnDestroy() {
-    if (this.interval) {
-      clearInterval(this.interval);
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
     }
   }
 
-  private loadSlides() {
-    this.slides = [
-      {
-        id: 1,
-        title: 'Nueva Colección',
-        subtitle: 'Verano 2024',
-        description: 'Descubre la última tecnología en ropa deportiva diseñada para maximizar tu rendimiento',
-        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=600&fit=crop',
-        buttonText: 'Ver Colección',
-        buttonLink: '#'
-      },
-      {
-        id: 2,
-        title: 'Calzado Deportivo',
-        subtitle: 'Máximo Confort',
-        description: 'Zapatillas con tecnología avanzada para correr más rápido y más lejos',
-        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&h=600&fit=crop',
-        buttonText: 'Explorar Calzado',
-        buttonLink: '#'
-      },
-      {
-        id: 3,
-        title: 'Equipamiento',
-        subtitle: 'Profesional',
-        description: 'Todo lo que necesitas para llevar tu entrenamiento al siguiente nivel',
-        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=600&fit=crop',
-        buttonText: 'Ver Equipamiento',
-        buttonLink: '#'
-      }
-    ];
-  }
-
-  private startAutoPlay() {
-    this.interval = setInterval(() => {
+  startCarousel(): void {
+    this.intervalId = setInterval(() => {
       this.nextSlide();
     }, 5000);
   }
 
-  nextSlide() {
-    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+  setCurrentSlide(index: number): void {
+    this.currentIndex = index;
   }
 
-  prevSlide() {
-    this.currentSlide = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
+  prevSlide(): void {
+    this.currentIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.slides.length - 1;
   }
 
-  goToSlide(index: number) {
-    this.currentSlide = index;
-  }
-
-  pauseAutoPlay() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  }
-
-  resumeAutoPlay() {
-    this.startAutoPlay();
+  nextSlide(): void {
+    this.currentIndex = (this.currentIndex + 1) % this.slides.length;
   }
 } 

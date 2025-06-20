@@ -1,91 +1,73 @@
-import { Component } from '@angular/core';
-import { CarritoService, ProductoCarrito } from '../../services/carrito.service';
+import { Component, OnInit } from '@angular/core';
 import { AuthService, Usuario } from '../../services/auth.service';
+import { CarritoService, ProductoCarrito } from '../../services/carrito.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  isMenuOpen = false;
-  showRegisterModal = false;
-  showCarrito = false;
+export class NavbarComponent implements OnInit {
+  menuOpen = false;
   showUserMenu = false;
+  showRegisterModal = false;
   showEditProfile = false;
+  showCarrito = false;
+
+  usuario: Usuario | null = null;
   cantidadCarrito = 0;
   productosCarrito: ProductoCarrito[] = [];
-  usuario: Usuario | null = null;
 
+  get totalCarrito(): number {
+    return this.productosCarrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+  }
+  
   constructor(
+    public authService: AuthService,
     public carritoService: CarritoService,
-    public authService: AuthService
-  ) {
-    this.carritoService.carrito$.subscribe(carrito => {
-      this.productosCarrito = carrito;
-      this.cantidadCarrito = carrito.reduce((acc, p) => acc + p.cantidad, 0);
-    });
+    private themeService: ThemeService
+  ) {}
 
+  ngOnInit(): void {
     this.authService.usuario$.subscribe(usuario => {
       this.usuario = usuario;
     });
+
+    this.carritoService.carrito$.subscribe(productos => {
+      this.productosCarrito = productos;
+      this.cantidadCarrito = productos.reduce((total, p) => total + p.cantidad, 0);
+    });
   }
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  closeMenu() {
-    this.isMenuOpen = false;
-  }
-
-  openRegisterModal() {
-    this.showRegisterModal = true;
-  }
-
-  closeRegisterModal() {
-    this.showRegisterModal = false;
-  }
-
-  toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
-  }
-
-  openEditProfile() {
-    this.showEditProfile = true;
-    this.showUserMenu = false;
-  }
-
-  closeEditProfile() {
-    this.showEditProfile = false;
-  }
-
+  toggleMenu() { this.menuOpen = !this.menuOpen; }
+  closeMenu() { this.menuOpen = false; }
+  toggleUserMenu() { this.showUserMenu = !this.showUserMenu; }
+  
+  openRegisterModal() { this.showRegisterModal = true; this.closeMenu(); }
+  closeRegisterModal() { this.showRegisterModal = false; }
+  
+  openEditProfile() { this.showEditProfile = true; this.showUserMenu = false; }
+  closeEditProfile() { this.showEditProfile = false; }
+  
   logout() {
     this.authService.logout();
     this.showUserMenu = false;
   }
 
-  abrirCarrito() {
-    this.showCarrito = true;
+  abrirCarrito() { this.showCarrito = true; }
+  cerrarCarrito() { this.showCarrito = false; }
+
+  sumarUnidad(producto: ProductoCarrito) {
+    this.carritoService.agregarProducto(producto);
   }
 
-  cerrarCarrito() {
-    this.showCarrito = false;
+  restarUnidad(productoId: number) {
+    this.carritoService.restarUnidad(productoId);
   }
 
-  get totalCarrito(): number {
-    return this.productosCarrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
-  }
-
-  sumarUnidad(prod: ProductoCarrito) {
-    this.carritoService.agregarProducto({
-      id: prod.id,
-      nombre: prod.nombre,
-      precio: prod.precio,
-      imagen: prod.imagen,
-      cantidad: 1,
-      stock: prod.stock
-    });
+  eliminarProducto(productoId: number) {
+    this.carritoService.eliminarProducto(productoId);
   }
 
   comprarPorWhatsApp() {
