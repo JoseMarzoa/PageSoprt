@@ -58,10 +58,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sportswear-store:build:production"
+              "buildTarget": "sportswear-store:build:production"
             },
             "development": {
-              "browserTarget": "sportswear-store:build:development"
+              "buildTarget": "sportswear-store:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -69,7 +69,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sportswear-store:build"
+            "buildTarget": "sportswear-store:build"
           }
         },
         "test": {
