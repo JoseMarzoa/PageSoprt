@@ -1,17 +1,12 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/sportflex"
-      }
-    }
+    { "src": "src/app/**/*.ts", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
+    { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/dist/$1" }
   ],
   "buildCommand": "npm run build:prod",
   "outputDirectory": "dist/sportflex"
