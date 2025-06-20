@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<any>(`${this.API_URL}/login`, { email, password });
+    return this.http.post<any>(`/api/usuarios/login`, { email, password });
   }
 
   logout() {
@@ -61,11 +61,15 @@ export class AuthService {
     
     const payload = { ...datosActualizados, id: usuarioActual.id };
 
-    return this.http.put<any>(`${this.API_URL}/update`, payload);
+    return of({ error: 'Funcionalidad no implementada en Vercel' });
   }
 
   setUsuario(usuario: Usuario) {
     this.usuarioSubject.next(usuario);
     this.guardarUsuarioLocal(usuario);
+  }
+
+  register(usuario: Usuario) {
+    return this.http.post<any>(`/api/usuarios/register`, usuario);
   }
 } 
