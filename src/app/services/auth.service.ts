@@ -19,7 +19,7 @@ export interface Usuario {
 export class AuthService {
   private usuarioSubject = new BehaviorSubject<Usuario | null>(this.getUsuarioLocal());
   usuario$ = this.usuarioSubject.asObservable();
-  private API_URL = 'http://localhost:4001/api/usuarios';
+  private API_URL = '/api/listar_usuarios';
 
   constructor(private http: HttpClient) {}
 

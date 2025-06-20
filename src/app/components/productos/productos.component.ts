@@ -32,7 +32,7 @@ export class ProductosComponent implements OnInit {
   constructor(private http: HttpClient, private carritoService: CarritoService) {}
 
   ngOnInit(): void {
-    this.http.get<Producto[]>('http://localhost:4001/api/productos').subscribe(data => {
+    this.http.get<Producto[]>('/api/productos').subscribe(data => {
       this.productos = data;
       this.productosFiltrados = data;
 
