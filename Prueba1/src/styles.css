@@ -1,0 +1,176 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-900 text-white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-white text-gray-900 font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl border border-gray-700;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-gray-900;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-r from-primary-500 to-secondary-500;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+}
+
+/* Variables CSS para temas de colores */
+:root {
+  --color-primary: #3B82F6;
+  --color-secondary: #1E40AF;
+  --color-accent: #F59E0B;
+  --color-background: #F8FAFC;
+  --color-text: #1F2937;
+  --color-surface: #FFFFFF;
+  --color-border: #E5E7EB;
+}
+
+/* Clases utilitarias para usar las variables CSS */
+.bg-theme-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-theme-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.bg-theme-accent {
+  background-color: var(--color-accent) !important;
+}
+
+.bg-theme-background {
+  background-color: var(--color-background) !important;
+}
+
+.bg-theme-surface {
+  background-color: var(--color-surface) !important;
+}
+
+.text-theme-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-theme-secondary {
+  color: var(--color-secondary) !important;
+}
+
+.text-theme-accent {
+  color: var(--color-accent) !important;
+}
+
+.text-theme-text {
+  color: var(--color-text) !important;
+}
+
+.border-theme-border {
+  border-color: var(--color-border) !important;
+}
+
+/* Clases para Tailwind CSS con variables */
+.bg-primary-50 { background-color: var(--tw-primary-50, #eff6ff) !important; }
+.bg-primary-100 { background-color: var(--tw-primary-100, #dbeafe) !important; }
+.bg-primary-200 { background-color: var(--tw-primary-200, #bfdbfe) !important; }
+.bg-primary-300 { background-color: var(--tw-primary-300, #93c5fd) !important; }
+.bg-primary-400 { background-color: var(--tw-primary-400, #60a5fa) !important; }
+.bg-primary-500 { background-color: var(--tw-primary-500, #3b82f6) !important; }
+.bg-primary-600 { background-color: var(--tw-primary-600, #2563eb) !important; }
+.bg-primary-700 { background-color: var(--tw-primary-700, #1d4ed8) !important; }
+.bg-primary-800 { background-color: var(--tw-primary-800, #1e40af) !important; }
+.bg-primary-900 { background-color: var(--tw-primary-900, #1e3a8a) !important; }
+
+.text-primary-50 { color: var(--tw-primary-50, #eff6ff) !important; }
+.text-primary-100 { color: var(--tw-primary-100, #dbeafe) !important; }
+.text-primary-200 { color: var(--tw-primary-200, #bfdbfe) !important; }
+.text-primary-300 { color: var(--tw-primary-300, #93c5fd) !important; }
+.text-primary-400 { color: var(--tw-primary-400, #60a5fa) !important; }
+.text-primary-500 { color: var(--tw-primary-500, #3b82f6) !important; }
+.text-primary-600 { color: var(--tw-primary-600, #2563eb) !important; }
+.text-primary-700 { color: var(--tw-primary-700, #1d4ed8) !important; }
+.text-primary-800 { color: var(--tw-primary-800, #1e40af) !important; }
+.text-primary-900 { color: var(--tw-primary-900, #1e3a8a) !important; }
+
+.border-primary-50 { border-color: var(--tw-primary-50, #eff6ff) !important; }
+.border-primary-500 { border-color: var(--tw-primary-500, #3b82f6) !important; }
+.border-primary-600 { border-color: var(--tw-primary-600, #2563eb) !important; }
+
+/* Clases para hover states */
+.hover\:bg-primary-600:hover { background-color: var(--tw-primary-600, #2563eb) !important; }
+.hover\:bg-primary-700:hover { background-color: var(--tw-primary-700, #1d4ed8) !important; }
+.hover\:text-primary-600:hover { color: var(--tw-primary-600, #2563eb) !important; }
+.hover\:text-primary-700:hover { color: var(--tw-primary-700, #1d4ed8) !important; }
+
+/* Clases para focus states */
+.focus\:ring-primary-500:focus { --tw-ring-color: var(--tw-primary-500, #3b82f6) !important; }
+.focus\:border-primary-500:focus { border-color: var(--tw-primary-500, #3b82f6) !important; }
+
+/* Transiciones suaves para cambios de tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Aplicar tema al body y html */
+body {
+  background-color: var(--color-background) !important;
+  color: var(--color-text) !important;
+}
+
+html {
+  background-color: var(--color-background) !important;
+}
+
+/* Estilos específicos para componentes */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+  border-color: var(--color-primary) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+} 

@@ -1,0 +1,47 @@
+/* Estilos específicos para el selector de temas */
+.theme-selector {
+  position: relative;
+}
+
+.theme-preview {
+  display: flex;
+  gap: 4px;
+}
+
+.color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  transition: transform 0.2s ease;
+}
+
+.color-dot:hover {
+  transform: scale(1.1);
+}
+
+/* Animaciones para el menú */
+.theme-menu {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para el tema activo */
+.theme-option.active {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.theme-option:hover {
+  background-color: #f9fafb;
+} 

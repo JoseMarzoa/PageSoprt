@@ -1,0 +1,25 @@
+<section class="py-16 bg-theme-background min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-4xl font-bold text-theme-text mb-10 text-center">Todos los productos</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div *ngFor="let producto of productos" class="card flex flex-col bg-theme-surface border border-theme-border">
+        <img [src]="producto.imagen" [alt]="producto.nombre" class="w-full h-64 object-cover rounded-t-xl">
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-xl font-bold mb-2 text-theme-text">{{ producto.nombre }}</h3>
+          <p class="text-theme-text opacity-75 mb-4 flex-1">{{ producto.descripcion }}</p>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-2xl font-bold text-theme-text">${{ producto.precio }}</span>
+            <span class="text-sm text-theme-text opacity-75">Stock: {{ producto.stock }}</span>
+          </div>
+          <div class="flex items-center gap-2 mb-4">
+            <label for="cantidad-{{producto.id}}" class="text-sm text-theme-text">Cantidad:</label>
+            <input id="cantidad-{{producto.id}}" type="number" min="1" [(ngModel)]="cantidades[producto.id]" class="w-20 px-2 py-1 rounded border border-theme-border focus:outline-none focus:border-primary-500 bg-theme-surface text-theme-text" />
+          </div>
+          <button class="btn-primary w-full" (click)="agregarAlCarrito(producto)">
+            <i class="fas fa-shopping-cart mr-2"></i>Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 

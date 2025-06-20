@@ -1,0 +1,199 @@
+/* Home component specific styles */
+
+/* Gradiente de texto para el nombre de la marca */
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animaciones para las tarjetas de categorías */
+.bg-white.rounded-2xl {
+  transition: all 0.3s ease;
+}
+
+.bg-white.rounded-2xl:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Efectos para los iconos en las categorías */
+.w-16.h-16 {
+  transition: transform 0.3s ease;
+}
+
+.bg-white.rounded-2xl:hover .w-16.h-16 {
+  transform: scale(1.1);
+}
+
+/* Animaciones para las estadísticas */
+.text-4xl.font-bold {
+  animation: countUp 2s ease-out;
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos para las tarjetas de testimonios */
+.bg-white.rounded-2xl.shadow-lg {
+  transition: all 0.3s ease;
+}
+
+.bg-white.rounded-2xl.shadow-lg:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Animación para las estrellas de calificación */
+.text-yellow-400 i {
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+.text-yellow-400 i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.text-yellow-400 i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.text-yellow-400 i:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.text-yellow-400 i:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* Efectos para los botones */
+.btn-primary {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de ripple para botones */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Animaciones para la sección de oferta especial */
+.bg-white\/20 {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Efectos para el input del newsletter */
+input[type="email"] {
+  transition: all 0.3s ease;
+}
+
+input[type="email"]:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+  
+  .text-4xl {
+    font-size: 2rem;
+  }
+  
+  .grid.grid-cols-1.md\\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animaciones de entrada para las secciones */
+section {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos de hover para los enlaces de categorías */
+button.text-primary-600,
+button.text-secondary-600,
+button.text-green-600,
+button.text-purple-600 {
+  transition: all 0.3s ease;
+}
+
+button.text-primary-600:hover,
+button.text-secondary-600:hover,
+button.text-green-600:hover,
+button.text-purple-600:hover {
+  transform: translateX(5px);
+}
+
+/* Efectos para el gradiente de fondo */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+} 

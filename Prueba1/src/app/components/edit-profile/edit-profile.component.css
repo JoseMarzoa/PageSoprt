@@ -1,0 +1,4 @@
+/* Estilos específicos para el componente de edición de perfil */
+.btn-primary {
+  @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+} 

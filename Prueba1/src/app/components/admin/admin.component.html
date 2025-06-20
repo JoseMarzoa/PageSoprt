@@ -1,0 +1,362 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <!-- Header -->
+  <div class="bg-white shadow-lg border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-cog text-white text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold text-gray-900">Administración</h1>
+                <p class="text-sm text-gray-600">Panel de control de SportFlex</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-user-shield text-green-600 text-sm"></i>
+            </div>
+            <span class="text-sm font-medium text-gray-700">Administrador</span>
+          </div>
+          <button class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-bell text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex space-x-8">
+        <button 
+          (click)="setSection('dashboard')"
+          [class]="currentSection === 'dashboard' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          class="border-b-2 py-4 px-1 text-sm font-medium transition-colors">
+          <i class="fas fa-chart-bar mr-2"></i>Dashboard
+        </button>
+        <button 
+          (click)="setSection('usuarios')"
+          [class]="currentSection === 'usuarios' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          class="border-b-2 py-4 px-1 text-sm font-medium transition-colors">
+          <i class="fas fa-users mr-2"></i>Usuarios
+        </button>
+        <button 
+          (click)="setSection('productos')"
+          [class]="currentSection === 'productos' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          class="border-b-2 py-4 px-1 text-sm font-medium transition-colors">
+          <i class="fas fa-box mr-2"></i>Productos
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div *ngIf="currentSection === 'dashboard' && !loading">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+              <i class="fas fa-users text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Total Usuarios</p>
+              <p class="text-2xl font-semibold text-gray-900">{{ stats.totalUsuarios }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-600">
+              <i class="fas fa-box text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Total Productos</p>
+              <p class="text-2xl font-semibold text-gray-900">{{ stats.totalProductos }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-red-100 text-red-600">
+              <i class="fas fa-user-plus text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-600">Usuarios Nuevos</p>
+              <p class="text-2xl font-semibold text-gray-900">{{ stats.usuariosNuevos }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Bienvenido al Panel de Administración</h3>
+        <p class="text-gray-600">
+          Desde aquí puedes gestionar usuarios, productos, pedidos y configuraciones del sistema. 
+          Utiliza las pestañas de navegación para acceder a cada sección.
+        </p>
+      </div>
+    </div>
+
+    <!-- Usuarios Section -->
+    <div *ngIf="currentSection === 'usuarios' && !loading">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h2>
+        <button 
+          (click)="openUsuarioModal('create')"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <i class="fas fa-plus mr-2"></i>Nuevo Usuario
+        </button>
+      </div>
+
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let usuario of usuarios">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <i class="fas fa-user text-gray-600"></i>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ usuario.nombre }} {{ usuario.apellido }}</div>
+                      <div class="text-sm text-gray-500">Usuario: {{ usuario.username }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ usuario.email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ usuario.celular }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [class]="getRolColor(usuario.rol)" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                    {{ usuario.rol }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button 
+                    (click)="openUsuarioModal('edit', usuario)"
+                    class="text-blue-600 hover:text-blue-900 mr-3">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button 
+                    (click)="deleteUsuario(usuario)"
+                    class="text-red-600 hover:text-red-900">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos Section -->
+    <div *ngIf="currentSection === 'productos' && !loading">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Gestión de Productos</h2>
+        <button 
+          (click)="openProductoModal('create')"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <i class="fas fa-plus mr-2"></i>Nuevo Producto
+        </button>
+      </div>
+
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let producto of productos">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <img [src]="producto.imagen" [alt]="producto.nombre" class="w-10 h-10 rounded object-cover">
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">{{ producto.nombre }}</div>
+                      <div class="text-sm text-gray-500">{{ producto.descripcion }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ producto.categoria }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ producto.precio }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ producto.stock }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span 
+                    [class]="producto.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                    {{ producto.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button 
+                    (click)="openProductoModal('edit', producto)"
+                    class="text-blue-600 hover:text-blue-900 mr-3">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button 
+                    (click)="toggleProductoActivo(producto)"
+                    [class]="producto.activo ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'"
+                    class="mr-3">
+                    <i [class]="producto.activo ? 'fas fa-pause' : 'fas fa-play'"></i>
+                  </button>
+                  <button 
+                    (click)="deleteProducto(producto)"
+                    class="text-red-600 hover:text-red-900">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Usuarios y Productos -->
+<div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-900">
+        {{ modalType === 'create' ? 'Crear' : 'Editar' }} 
+        {{ currentSection === 'usuarios' ? 'Usuario' : 'Producto' }}
+      </h3>
+      <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Formulario de Usuario -->
+    <form *ngIf="currentSection === 'usuarios'" [formGroup]="usuarioForm" (ngSubmit)="saveUsuario()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nombre</label>
+          <input type="text" formControlName="nombre" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" [disabled]="modalType === 'edit'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Apellido</label>
+          <input type="text" formControlName="apellido" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" [disabled]="modalType === 'edit'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" formControlName="username" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" [disabled]="modalType === 'edit'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" formControlName="email" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" [disabled]="modalType === 'edit'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+          <input type="tel" formControlName="celular" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500" [disabled]="modalType === 'edit'">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Rol</label>
+          <select formControlName="rol" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <option value="Comprador">Comprador</option>
+            <option value="Administrador">Administrador</option>
+          </select>
+        </div>
+        <div *ngIf="modalType === 'create'">
+          <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <input type="password" formControlName="password" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      </div>
+      <div class="flex justify-end space-x-3 mt-6">
+        <button type="button" (click)="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="!usuarioForm.valid" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+          {{ modalType === 'create' ? 'Crear' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Formulario de Producto -->
+    <form *ngIf="currentSection === 'productos'" [formGroup]="productoForm" (ngSubmit)="saveProducto()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nombre</label>
+          <input type="text" formControlName="nombre" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Precio</label>
+          <input type="number" formControlName="precio" step="0.01" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Categoría</label>
+          <div class="flex gap-2">
+            <select formControlName="categoria" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <option value="">Seleccionar categoría</option>
+              <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+            </select>
+            <input type="text" [(ngModel)]="nuevaCategoria" placeholder="Nueva categoría" class="mt-1 block border border-gray-300 rounded-md px-2 py-2 w-32">
+            <button type="button" (click)="agregarCategoria()" class="mt-1 px-3 py-2 bg-green-600 text-white rounded-md">+</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Descripción</label>
+          <textarea formControlName="descripcion" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Imagen</label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          <div *ngIf="imagenPreview" class="mt-2">
+            <img [src]="imagenPreview" alt="Preview" class="w-32 h-32 object-cover rounded border">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Stock</label>
+          <input type="number" formControlName="stock" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" formControlName="activo" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label class="ml-2 block text-sm text-gray-900">Producto activo</label>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-3 mt-6">
+        <button type="button" (click)="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="!productoForm.valid" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+          {{ modalType === 'create' ? 'Crear' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

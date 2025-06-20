@@ -1,0 +1,238 @@
+/* Estilos específicos para el componente Admin */
+
+/* Animaciones de entrada */
+.min-h-screen {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efectos hover para botones */
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* Efectos para el icono de administración */
+.w-24.h-24 {
+  transition: transform 0.3s ease;
+}
+
+.w-24.h-24:hover {
+  transform: scale(1.05);
+}
+
+/* Efectos para las tarjetas */
+.bg-white.rounded-lg {
+  transition: all 0.3s ease;
+}
+
+.bg-white.rounded-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Estilos para las tablas */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: #f9fafb;
+  z-index: 10;
+}
+
+/* Efectos para las filas de tabla */
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Estilos para los badges de estado */
+.px-2.inline-flex.text-xs.leading-5.font-semibold.rounded-full {
+  transition: all 0.2s ease;
+}
+
+/* Efectos para los botones de acción */
+.text-blue-600,
+.text-red-600,
+.text-green-600,
+.text-yellow-600 {
+  transition: all 0.2s ease;
+}
+
+.text-blue-600:hover,
+.text-red-600:hover,
+.text-green-600:hover,
+.text-yellow-600:hover {
+  transform: scale(1.1);
+}
+
+/* Estilos para el modal */
+.fixed.inset-0 {
+  backdrop-filter: blur(4px);
+}
+
+/* Estilos para los formularios */
+input, select, textarea {
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Animación para el loading spinner */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Efectos para las tarjetas de estadísticas */
+.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-5 > div {
+  transition: all 0.3s ease;
+}
+
+.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-5 > div:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Estilos para la navegación */
+nav button {
+  position: relative;
+  overflow: hidden;
+}
+
+nav button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+nav button:hover::after {
+  width: 100%;
+}
+
+/* Efectos para los selectores de estado */
+select.px-2.py-1.text-xs.font-semibold.rounded-full {
+  transition: all 0.2s ease;
+}
+
+select.px-2.py-1.text-xs.font-semibold.rounded-full:hover {
+  transform: scale(1.05);
+}
+
+/* Estilos para las imágenes de productos */
+img.w-10.h-10.rounded.object-cover {
+  transition: all 0.3s ease;
+}
+
+img.w-10.h-10.rounded.object-cover:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-3xl {
+    font-size: 2rem;
+  }
+  
+  .w-24.h-24 {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .text-3xl {
+    font-size: 1.5rem;
+  }
+  
+  /* Ajustes para tablas en móvil */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ocultar columnas menos importantes en móvil */
+  .hidden-mobile {
+    display: none;
+  }
+}
+
+/* Efectos de focus mejorados para accesibilidad */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para checkboxes personalizados */
+input[type="checkbox"] {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.25rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animaciones para las transiciones de sección */
+*ngIf {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+} 

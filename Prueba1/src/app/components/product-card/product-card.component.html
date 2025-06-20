@@ -1,0 +1,79 @@
+<div class="card group overflow-hidden">
+  <!-- Product Image Container -->
+  <div class="relative overflow-hidden">
+    <img 
+      [src]="product.image" 
+      [alt]="product.name"
+      class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+    
+    <!-- Badges -->
+    <div class="absolute top-4 left-4 flex flex-col gap-2">
+      <span *ngIf="product.isNew" class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+        <i class="fas fa-sparkles mr-1"></i>Nuevo
+      </span>
+      <span *ngIf="product.isBestSeller" class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+        <i class="fas fa-star mr-1"></i>Más Vendido
+      </span>
+      <span *ngIf="product.originalPrice" class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+        -{{ getDiscountPercentage() }}%
+      </span>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <button 
+        (click)="addToWishlist()"
+        class="bg-white/90 hover:bg-white text-gray-700 hover:text-red-500 p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg">
+        <i class="fas fa-heart"></i>
+      </button>
+      <button 
+        (click)="addToCart()"
+        class="bg-white/90 hover:bg-white text-gray-700 hover:text-primary-600 p-2 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+    </div>
+
+    <!-- Category Badge -->
+    <div class="absolute bottom-4 left-4">
+      <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+        {{ product.category }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-6">
+    <!-- Product Name -->
+    <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors duration-300">
+      {{ product.name }}
+    </h3>
+
+    <!-- Rating -->
+    <div class="flex items-center mb-3">
+      <div class="flex items-center mr-2">
+        <i 
+          *ngFor="let star of getStarRating()" 
+          [class]="star + ' text-yellow-400 text-sm'">
+        </i>
+      </div>
+      <span class="text-sm text-gray-600">({{ product.reviews }})</span>
+    </div>
+
+    <!-- Price -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl font-bold text-gray-900">${{ product.price }}</span>
+        <span *ngIf="product.originalPrice" class="text-lg text-gray-500 line-through">
+          ${{ product.originalPrice }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Add to Cart Button -->
+    <button 
+      (click)="addToCart()"
+      class="w-full btn-primary group-hover:bg-primary-700 transition-all duration-300">
+      <i class="fas fa-shopping-cart mr-2"></i>Agregar al Carrito
+    </button>
+  </div>
+</div> 
