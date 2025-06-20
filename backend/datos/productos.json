@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "nombre": "Zapatillas Runner Pro",
+    "precio": 120.50,
+    "categoria": "Calzado",
+    "descripcion": "Zapatillas de running de alto rendimiento, diseñadas para corredores profesionales.",
+    "imagen": "/assets/images/products/running_shoes_1.jpg",
+    "stock": 50,
+    "activo": true,
+    "marca": "SportFlex",
+    "tallas": ["40", "41", "42", "43", "44"]
+  },
+  {
+    "id": 2,
+    "nombre": "Camiseta Técnica DryFit",
+    "precio": 35.00,
+    "categoria": "Ropa",
+    "descripcion": "Camiseta transpirable que expulsa el sudor para mantenerte seco y cómodo.",
+    "imagen": "/assets/images/products/tech_shirt_1.jpg",
+    "stock": 120,
+    "activo": true,
+    "marca": "SportFlex",
+    "tallas": ["S", "M", "L", "XL"]
+  },
+  {
+    "id": 3,
+    "nombre": "Mancuernas Ajustables (Par)",
+    "precio": 150.00,
+    "categoria": "Equipamiento",
+    "descripcion": "Set de mancuernas ajustables de 2 a 24 kg. Perfectas para entrenar en casa.",
+    "imagen": "/assets/images/products/dumbbells_1.jpg",
+    "stock": 30,
+    "activo": true,
+    "marca": "FitForce",
+    "tallas": []
+  },
+  {
+    "id": 4,
+    "nombre": "Reloj Deportivo GPS",
+    "precio": 210.00,
+    "categoria": "Accesorios",
+    "descripcion": "Reloj inteligente con GPS, medidor de frecuencia cardíaca y seguimiento de actividad.",
+    "imagen": "/assets/images/products/gps_watch_1.jpg",
+    "stock": 45,
+    "activo": true,
+    "marca": "ConnectFit",
+    "tallas": []
+  }
+] 

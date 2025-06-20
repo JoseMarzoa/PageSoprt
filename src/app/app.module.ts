@@ -20,6 +20,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { CartComponent } from './components/cart/cart.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -46,7 +47,8 @@ const routes: Routes = [
     ContactComponent,
     AdminComponent,
     ThemeSelectorComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    CartComponent
   ],
   imports: [
     BrowserModule,

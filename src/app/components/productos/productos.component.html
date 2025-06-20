@@ -1,108 +1,100 @@
-<div class="bg-theme-background text-theme-text min-h-screen pt-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="bg-theme-background min-h-screen">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- Encabezado -->
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-extrabold">Nuestros Productos</h1>
-      <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">Encuentra el equipamiento perfecto para tu entrenamiento</p>
-    </div>
+    <!-- Encabezado y control de filtros en móvil -->
+    <header class="flex justify-between items-center mb-6 lg:hidden">
+      <h1 class="text-3xl font-bold text-theme-text">Productos</h1>
+      <button (click)="toggleFilters()" class="p-2 rounded-md text-theme-text hover:bg-theme-surface focus:outline-none focus:ring-2 focus:ring-theme-primary">
+        <i class="fas fa-filter mr-2"></i> Filtros
+      </button>
+    </header>
 
     <div class="lg:grid lg:grid-cols-4 lg:gap-8">
-      <!-- Filtros (Barra lateral en Desktop, Menú en Móvil) -->
-      <aside class="lg:col-span-1">
-        <!-- Botón para mostrar filtros en móvil -->
-        <div class="lg:hidden mb-4">
-          <button (click)="toggleFilters()" class="w-full flex justify-between items-center px-4 py-2 bg-theme-surface border border-theme-border rounded-lg">
-            <span>Filtros</span>
-            <i class="fas" [ngClass]="{'fa-chevron-down': !showFilters, 'fa-chevron-up': showFilters}"></i>
-          </button>
+      <!-- Barra lateral de filtros -->
+      <aside [ngClass]="{'block': showFilters, 'hidden': !showFilters}" class="lg:block lg:col-span-1 bg-theme-surface rounded-lg p-6 shadow-sm h-fit">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-theme-text">Filtros</h2>
+          <button (click)="limpiarFiltros()" class="text-sm font-medium text-theme-primary hover:text-theme-secondary">Limpiar</button>
         </div>
 
-        <!-- Contenedor de filtros -->
-        <div [ngClass]="{'hidden': !showFilters, 'block': showFilters}" class="lg:block p-6 bg-theme-surface rounded-lg shadow">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold">Filtros</h2>
-            <button (click)="limpiarFiltros()" class="text-sm text-blue-500 hover:underline">Limpiar</button>
-          </div>
-          
-          <!-- Ordenar Por -->
-          <div class="mb-6">
-            <h3 class="font-semibold mb-3">Ordenar por</h3>
-            <select [(ngModel)]="orden" (ngModelChange)="aplicarFiltros()" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border-transparent rounded-md focus:ring-2 focus:ring-blue-500">
-              <option value="relevancia">Relevancia</option>
-              <option value="precio-asc">Precio: Menor a Mayor</option>
-              <option value="precio-desc">Precio: Mayor a Menor</option>
-              <option value="nombre-asc">Nombre: A-Z</option>
-              <option value="nombre-desc">Nombre: Z-A</option>
-            </select>
-          </div>
+        <!-- Filtro de Ordenar -->
+        <div class="mb-6">
+          <label for="sort-order" class="block text-sm font-medium text-theme-text-secondary mb-2">Ordenar por</label>
+          <select id="sort-order" [(ngModel)]="orden" (ngModelChange)="aplicarFiltros()" class="w-full bg-theme-background border-theme-border rounded-md shadow-sm p-2 focus:ring-theme-primary focus:border-theme-primary">
+            <option value="relevancia">Relevancia</option>
+            <option value="precio-desc">Precio: Mayor a Menor</option>
+            <option value="precio-asc">Precio: Menor a Mayor</option>
+            <option value="nombre-asc">Nombre: A-Z</option>
+            <option value="nombre-desc">Nombre: Z-A</option>
+          </select>
+        </div>
 
-          <!-- Filtro por Marca -->
-          <div class="mb-6">
-            <h3 class="font-semibold mb-3">Marca</h3>
-            <div class="space-y-2 max-h-40 overflow-y-auto">
-              <div *ngFor="let marca of marcasUnicas" class="flex items-center">
-                <input type="checkbox" [id]="'marca-'+marca" [value]="marca" (change)="onBrandChange($event)" [checked]="marcasSeleccionadas.includes(marca)" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label [for]="'marca-'+marca" class="ml-3 text-sm">{{ marca }}</label>
-              </div>
+        <!-- Filtro de Categorías -->
+        <div class="mb-6">
+          <h3 class="font-semibold mb-3 text-theme-text">Categoría</h3>
+          <div class="space-y-2">
+            <div *ngFor="let categoria of categoriasUnicas" class="flex items-center">
+              <input type="checkbox" [id]="'cat-' + categoria" [value]="categoria" (change)="onCategoryChange($event)" [checked]="categoriasSeleccionadas.includes(categoria)" class="h-4 w-4 rounded border-gray-300 text-theme-primary focus:ring-theme-primary">
+              <label [for]="'cat-' + categoria" class="ml-3 text-sm text-theme-text-secondary">{{ categoria }}</label>
             </div>
           </div>
+        </div>
 
-          <!-- Filtro por Talla -->
-          <div class="mb-6">
-            <h3 class="font-semibold mb-3">Talla</h3>
-            <div class="flex flex-wrap gap-2">
-              <button *ngFor="let talla of tallasUnicas" (click)="onSizeChange(talla)"
-                      [ngClass]="{'bg-blue-600 text-white': tallasSeleccionadas.includes(talla), 'bg-gray-200 dark:bg-gray-700': !tallasSeleccionadas.includes(talla)}"
-                      class="px-3 py-1 text-sm font-medium rounded-full transition-colors">
-                {{ talla }}
-              </button>
+        <!-- Filtro de Marcas -->
+        <div class="mb-6">
+          <h3 class="font-semibold mb-3 text-theme-text">Marca</h3>
+          <div class="space-y-2">
+            <div *ngFor="let marca of marcasUnicas" class="flex items-center">
+              <input type="checkbox" [id]="'brand-' + marca" [value]="marca" (change)="onBrandChange($event)" [checked]="marcasSeleccionadas.includes(marca)" class="h-4 w-4 rounded border-gray-300 text-theme-primary focus:ring-theme-primary">
+              <label [for]="'brand-' + marca" class="ml-3 text-sm text-theme-text-secondary">{{ marca }}</label>
             </div>
           </div>
-          
-          <!-- Filtro por Categoría -->
-          <div class="mb-6">
-            <h3 class="font-semibold mb-3">Categoría</h3>
-            <div class="space-y-2">
-              <div *ngFor="let categoria of categoriasUnicas" class="flex items-center">
-                <input type="checkbox" [id]="categoria" [value]="categoria" (change)="onCategoryChange($event)" [checked]="categoriasSeleccionadas.includes(categoria)" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label [for]="categoria" class="ml-3 text-sm">{{ categoria }}</label>
-              </div>
-            </div>
+        </div>
+        
+        <!-- Filtro de Precio -->
+        <div class="mb-6">
+          <h3 class="font-semibold mb-3 text-theme-text">Precio</h3>
+          <input type="range" [min]="0" [max]="maxPrice" [(ngModel)]="precioMaximo" (mouseup)="aplicarFiltros()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+          <div class="flex justify-between text-sm text-theme-text-secondary mt-2">
+            <span>$0</span>
+            <span>{{ precioMaximo | currency }}</span>
           </div>
-          
-          <!-- Filtro por Precio -->
-          <div>
-            <h3 class="font-semibold mb-4">Precio</h3>
-            <input type="range" min="0" [max]="maxPrice" [(ngModel)]="precioMaximo" (input)="aplicarFiltros()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-            <div class="text-center mt-2">
-              <span>Hasta: {{ precioMaximo | currency }}</span>
-            </div>
+        </div>
+
+        <!-- Filtro de Tallas -->
+        <div>
+          <h3 class="font-semibold mb-3 text-theme-text">Talla</h3>
+          <div class="flex flex-wrap gap-2">
+            <button *ngFor="let talla of tallasUnicas" (click)="onSizeChange(talla)" [ngClass]="tallasSeleccionadas.includes(talla) ? 'bg-theme-primary text-white' : 'bg-theme-background text-theme-text border border-theme-border'" class="px-3 py-1 text-sm rounded-full transition-colors">
+              {{ talla }}
+            </button>
           </div>
         </div>
       </aside>
 
-      <!-- Grid de Productos -->
-      <main class="lg:col-span-3 mt-8 lg:mt-0">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div *ngFor="let producto of productosFiltrados" class="card bg-theme-surface rounded-lg shadow-md overflow-hidden flex flex-col transform hover:-translate-y-1 transition-transform duration-300">
-            <img [src]="producto.imagen" [alt]="producto.nombre" class="w-full h-56 object-cover">
-            <div class="p-4 flex flex-col flex-grow">
-              <h3 class="text-lg font-bold mb-2">{{ producto.nombre }}</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex-grow">{{ producto.descripcion }}</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xl font-bold text-blue-500">{{ producto.precio | currency }}</span>
-                <span class="text-sm font-medium">Stock: {{ producto.stock }}</span>
-              </div>
-              <button (click)="agregarAlCarrito(producto)" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Agregar al carrito
-              </button>
-            </div>
+      <!-- Cuadrícula de productos -->
+      <main class="lg:col-span-3">
+        <header class="hidden lg:flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-theme-text">Productos</h1>
+            <p class="text-theme-text-secondary">{{ productosFiltrados.length }} resultados</p>
+        </header>
+
+        <div *ngIf="productosFiltrados.length > 0; else noResults" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <app-product-card 
+            *ngFor="let producto of productosFiltrados" 
+            [producto]="producto">
+          </app-product-card>
+        </div>
+        <ng-template #noResults>
+          <div class="text-center py-16">
+            <i class="fas fa-search-minus text-5xl text-theme-text-secondary mb-4"></i>
+            <h3 class="text-xl font-semibold text-theme-text">No se encontraron productos</h3>
+            <p class="text-theme-text-secondary mt-2">Intenta ajustar tus filtros para encontrar lo que buscas.</p>
+            <button (click)="limpiarFiltros()" class="mt-4 bg-theme-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-theme-secondary transition-all">
+              Limpiar todos los filtros
+            </button>
           </div>
-        </div>
-        <div *ngIf="productosFiltrados.length === 0" class="text-center py-16">
-            <p class="text-lg text-gray-500">No se encontraron productos con estos filtros.</p>
-        </div>
+        </ng-template>
       </main>
     </div>
   </div>

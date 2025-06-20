@@ -8,25 +8,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 export class HeroCarouselComponent implements OnInit, OnDestroy {
   slides = [
     {
-      image: 'assets/images/hero-1.jpg',
+      image: 'https://placehold.co/1600x900/111827/FFFFFF?text=Colección+Verano',
       title: 'Colección de Verano',
       subtitle: 'Estilo y rendimiento bajo el sol',
-      description: 'Descubre nuestra nueva línea de ropa deportiva diseñada para mantenerte fresco y cómodo.',
-      buttonText: 'Explorar ahora'
     },
     {
-      image: 'assets/images/hero-2.jpg',
+      image: 'https://placehold.co/1600x900/1F2937/FFFFFF?text=Equipamiento',
       title: 'Equipamiento para Correr',
       subtitle: 'Supera tus límites',
-      description: 'Todo lo que necesitas para llevar tu carrera al siguiente nivel.',
-      buttonText: 'Ver productos'
     },
     {
-      image: 'assets/images/hero-3.jpg',
+      image: 'https://placehold.co/1600x900/374151/FFFFFF?text=Comodidad+y+Estilo',
       title: 'Comodidad y Estilo',
       subtitle: 'Ropa para el día a día',
-      description: 'Diseños versátiles que te acompañan del gimnasio a la calle.',
-      buttonText: 'Descubrir más'
     }
   ];
 

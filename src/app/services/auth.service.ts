@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 
 export interface Usuario {
   id: number;
@@ -19,7 +19,7 @@ export interface Usuario {
 export class AuthService {
   private usuarioSubject = new BehaviorSubject<Usuario | null>(this.getUsuarioLocal());
   usuario$ = this.usuarioSubject.asObservable();
-  private API_URL = 'http://localhost:4000/api/usuarios';
+  private API_URL = 'http://localhost:4001/api/usuarios';
 
   constructor(private http: HttpClient) {}
 
@@ -53,14 +53,15 @@ export class AuthService {
     this.guardarUsuarioLocal(null);
   }
 
-  actualizarPerfil(datosActualizados: Partial<Usuario>) {
+  actualizarPerfil(datosActualizados: Partial<Usuario>): Observable<any> {
     const usuarioActual = this.getUsuario();
-    if (!usuarioActual) return;
+    if (!usuarioActual) {
+      return throwError(() => new Error('No hay un usuario autenticado para actualizar.'));
+    }
+    
+    const payload = { ...datosActualizados, id: usuarioActual.id };
 
-    return this.http.put<any>(`${this.API_URL}/update`, {
-      id: usuarioActual.id,
-      ...datosActualizados
-    });
+    return this.http.put<any>(`${this.API_URL}/update`, payload);
   }
 
   setUsuario(usuario: Usuario) {

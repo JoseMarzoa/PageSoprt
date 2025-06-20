@@ -1,16 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const { createUser, authenticateUser, updateUser } = require('./datos/usuarios-util');
+const { createUser, authenticateUser, updateUser, getAllUsers } = require('./datos/usuarios-util');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Configuración de almacenamiento para imágenes
 const uploadDir = path.join(__dirname, 'uploads');
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Productos (almacenados en archivo JSON)
+// Funciones de ayuda para productos
 const productosFile = path.join(__dirname, 'datos', 'productos.json');
 function leerProductos() {
   if (!fs.existsSync(productosFile)) return [];
@@ -37,6 +37,58 @@ function leerProductos() {
 function guardarProductos(productos) {
   fs.writeFileSync(productosFile, JSON.stringify(productos, null, 2));
 }
+
+// ================== RUTAS DE PRODUCTOS ==================
+app.get('/api/productos', (req, res) => {
+  res.json(leerProductos());
+});
+
+app.post('/api/productos', (req, res) => {
+  const nombre = req.body.nombre;
+  const precio = req.body.precio;
+  const categoria = req.body.categoria;
+  const descripcion = req.body.descripcion;
+  const imagen = req.body.imagen;
+  const stock = req.body.stock;
+  const activo = req.body.activo;
+
+  if (!nombre || !precio || !categoria || !descripcion || !imagen || stock === undefined) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
+  }
+  let productos = leerProductos();
+  const nuevoProducto = {
+    id: productos.length ? Math.max(...productos.map(p => p.id)) + 1 : 1,
+    nombre, precio, categoria, descripcion, imagen, stock,
+    activo: activo !== undefined ? activo : true
+  };
+  productos.push(nuevoProducto);
+  guardarProductos(productos);
+  res.status(201).json({ success: true, producto: nuevoProducto });
+});
+
+app.put('/api/productos/:id', (req, res) => {
+  const productoId = parseInt(req.params.id, 10);
+  let productos = leerProductos();
+  const index = productos.findIndex(p => p.id === productoId);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Producto no encontrado.' });
+  }
+  productos[index] = { ...productos[index], ...req.body };
+  guardarProductos(productos);
+  res.json({ success: true, producto: productos[index] });
+});
+
+app.post('/api/productos/upload', upload.single('imagen'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se subió ninguna imagen.' });
+  }
+  res.json({ imageUrl: `/uploads/${req.file.filename}` });
+});
+
+// ================== RUTAS DE USUARIOS ==================
+app.get('/api/usuarios', (req, res) => {
+  res.json(getAllUsers());
+});
 
 // Registro de usuario
 app.post('/api/usuarios/register', (req, res) => {
@@ -101,36 +153,6 @@ app.put('/api/usuarios/update', (req, res) => {
     console.error('Error en endpoint update:', e);
     res.status(400).json({ error: e.message });
   }
-});
-
-// Endpoint para subir imagen
-app.post('/api/productos/upload', upload.single('imagen'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No se subió ninguna imagen.' });
-  }
-  res.json({ imageUrl: `/uploads/${req.file.filename}` });
-});
-
-// Endpoint para crear producto
-app.post('/api/productos', (req, res) => {
-  const { nombre, precio, categoria, descripcion, imagen, stock, activo } = req.body;
-  if (!nombre || !precio || !categoria || !descripcion || !imagen || stock === undefined) {
-    return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
-  }
-  let productos = leerProductos();
-  const nuevoProducto = {
-    id: productos.length ? productos[productos.length - 1].id + 1 : 1,
-    nombre,
-    precio,
-    categoria,
-    descripcion,
-    imagen,
-    stock,
-    activo: activo !== undefined ? activo : true
-  };
-  productos.push(nuevoProducto);
-  guardarProductos(productos);
-  res.json({ success: true, producto: nuevoProducto });
 });
 
 // Servir imágenes estáticas

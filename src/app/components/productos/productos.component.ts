@@ -1,18 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CarritoService } from '../../services/carrito.service';
-
-interface Producto {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  stock: number;
-  categoria: string;
-  marca: string;
-  tallas: string[];
-  imagen: string;
-}
+import { Producto } from '../../models/producto.model';
 
 type SortOrder = 'relevancia' | 'precio-asc' | 'precio-desc' | 'nombre-asc' | 'nombre-desc';
 
@@ -43,7 +32,7 @@ export class ProductosComponent implements OnInit {
   constructor(private http: HttpClient, private carritoService: CarritoService) {}
 
   ngOnInit(): void {
-    this.http.get<Producto[]>('/assets/data/productos.json').subscribe(data => {
+    this.http.get<Producto[]>('http://localhost:4001/api/productos').subscribe(data => {
       this.productos = data;
       this.productosFiltrados = data;
 

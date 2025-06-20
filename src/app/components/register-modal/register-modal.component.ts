@@ -33,7 +33,7 @@ export class RegisterModalComponent {
   mensaje: string = '';
   error: string = '';
 
-  private API_URL = 'http://localhost:4000/api/usuarios';
+  private API_URL = 'http://localhost:4001/api/usuarios';
 
   constructor(
     private http: HttpClient,
@@ -91,6 +91,7 @@ export class RegisterModalComponent {
         this.mensaje = '¡Registro exitoso! Ya puedes iniciar sesión.';
         this.modo = 'ingreso';
         this.nombre = this.apellido = this.username = this.email = this.celular = this.password = this.confirmPassword = '';
+        this.cerrar();
       },
       error: (err) => {
         this.error = err.error?.error || 'Error al registrar usuario.';

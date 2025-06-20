@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Producto } from '../product-card/product-card.component';
+import { Producto } from '../../models/producto.model';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -7,25 +9,20 @@ import { Producto } from '../product-card/product-card.component';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
+  
   productosDestacados: Producto[] = [];
-  masVendidos: Producto[] = [];
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    // Aquí deberías cargar tus productos desde un servicio
-    this.productosDestacados = [
-      { id: 1, nombre: 'Camiseta Deportiva', categoria: 'Ropa', precio: 25.00, imagen: 'assets/images/product-1.jpg' },
-      { id: 2, nombre: 'Zapatillas de Correr', categoria: 'Calzado', precio: 80.00, imagen: 'assets/images/product-2.jpg', descuento: 15 },
-      { id: 3, nombre: 'Pantalones Cortos', categoria: 'Ropa', precio: 30.00, imagen: 'assets/images/product-3.jpg' },
-      { id: 4, nombre: 'Sudadera con Capucha', categoria: 'Ropa', precio: 50.00, imagen: 'assets/images/product-4.jpg' }
-    ];
+    this.http.get<Producto[]>('http://localhost:4001/api/productos').pipe(
+      map(productos => this.obtenerAleatorios(productos, 4))
+    ).subscribe(productos => {
+      this.productosDestacados = productos;
+    });
+  }
 
-    this.masVendidos = [
-      { id: 5, nombre: 'Leggings de Yoga', categoria: 'Ropa', precio: 45.00, imagen: 'assets/images/product-5.jpg' },
-      { id: 6, nombre: 'Gorra Deportiva', categoria: 'Accesorios', precio: 15.00, imagen: 'assets/images/product-6.jpg' },
-      { id: 2, nombre: 'Zapatillas de Correr', categoria: 'Calzado', precio: 80.00, imagen: 'assets/images/product-2.jpg', descuento: 15 },
-    ];
+  private obtenerAleatorios(array: any[], n: number): any[] {
+    return array.sort(() => 0.5 - Math.random()).slice(0, n);
   }
 } 

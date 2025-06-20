@@ -1,13 +1,6 @@
-import { Component, Input } from '@angular/core';
-
-export interface Producto {
-  id: number;
-  nombre: string;
-  categoria: string;
-  precio: number;
-  imagen: string;
-  descuento?: number;
-}
+import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Producto } from '../../models/producto.model';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-product-card',
@@ -16,12 +9,30 @@ export interface Producto {
 })
 export class ProductCardComponent {
   @Input() producto!: Producto;
+  @Output() productAdded = new EventEmitter<Producto>();
 
-  addToCart() {
-    console.log('Producto agregado al carrito:', this.producto.nombre);
+  cantidad = 1;
+
+  constructor(private carritoService: CarritoService) {}
+
+  agregarAlCarrito(event: Event): void {
+    event.stopPropagation();
+    this.carritoService.agregarProducto({ ...this.producto, cantidad: this.cantidad });
+    console.log(`${this.cantidad} x ${this.producto.nombre} agregado(s) al carrito.`);
+    this.cantidad = 1;
   }
 
-  addToWishlist() {
-    console.log('Producto agregado a favoritos:', this.producto.nombre);
+  incrementarCantidad(event: Event): void {
+    event.stopPropagation();
+    if (this.cantidad < this.producto.stock) {
+      this.cantidad++;
+    }
+  }
+
+  decrementarCantidad(event: Event): void {
+    event.stopPropagation();
+    if (this.cantidad > 1) {
+      this.cantidad--;
+    }
   }
 } 

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Producto } from '../../models/producto.model';
 
 interface Usuario {
   id: number;
@@ -10,17 +13,6 @@ interface Usuario {
   email: string;
   celular: string;
   rol: string;
-}
-
-interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-  categoria: string;
-  descripcion: string;
-  imagen: string;
-  stock: number;
-  activo: boolean;
 }
 
 @Component({
@@ -34,6 +26,7 @@ export class AdminComponent implements OnInit {
   
   // Datos
   usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
   productos: Producto[] = [];
   
   // Estados de carga
@@ -58,6 +51,8 @@ export class AdminComponent implements OnInit {
 
   categorias: string[] = ['Calzado', 'Ropa', 'Accesorios', 'Equipamiento'];
   nuevaCategoria: string = '';
+
+  private API_URL = 'http://localhost:4001/api';
 
   constructor(
     private http: HttpClient,
@@ -95,119 +90,67 @@ export class AdminComponent implements OnInit {
   // Navegación
   setSection(section: 'dashboard' | 'usuarios' | 'productos') {
     this.currentSection = section;
-    this.loadSectionData();
+    if (section !== 'dashboard') {
+      this.loadSectionData();
+    }
   }
 
   // Carga de datos
   loadDashboardData() {
     this.loading = true;
-    // Cargar usuarios y productos antes de calcular stats
-    this.loadUsuarios();
-    this.loadProductos();
-    setTimeout(() => {
+    forkJoin({
+      usuarios: this.http.get<Usuario[]>(`${this.API_URL}/usuarios`).pipe(catchError(() => of([]))),
+      productos: this.http.get<Producto[]>(`${this.API_URL}/productos`).pipe(catchError(() => of([])))
+    }).subscribe(({ usuarios, productos }) => {
+      this.usuarios = usuarios;
+      this.productos = productos;
+      this.usuariosFiltrados = usuarios;
+      
       this.stats = {
-        totalUsuarios: this.usuarios.length,
-        totalProductos: this.productos.length,
-        usuariosNuevos: 0
+        totalUsuarios: usuarios.length,
+        totalProductos: productos.length,
+        usuariosNuevos: 0 
       };
       this.loading = false;
-    }, 100);
+    }, error => {
+      console.error('Error cargando datos del dashboard:', error);
+      this.loading = false;
+    });
   }
 
   loadSectionData() {
     this.loading = true;
-    setTimeout(() => {
-      switch (this.currentSection) {
-        case 'usuarios':
-          this.loadUsuarios();
-          break;
-        case 'productos':
-          this.loadProductos();
-          break;
-      }
-      this.loading = false;
-    }, 500);
-  }
-
-  // CRUD Usuarios
-  loadUsuarios() {
-    // Simular datos de usuarios
-    this.usuarios = [
-      { id: 1, nombre: 'Jose', apellido: 'Marzoa', username: 'jmarzoa', email: 'marzoajose3@gmail.com', celular: '+59812345678', rol: 'Comprador' },
-      { id: 2, nombre: 'Admin', apellido: 'SportFlex', username: 'admin', email: 'admin@sportflex.com', celular: '+59892984881', rol: 'Administrador' }
-    ];
-  }
-
-  openUsuarioModal(type: 'create' | 'edit', usuario?: Usuario) {
-    this.modalType = type;
-    this.selectedItem = usuario;
-    
-    if (type === 'edit' && usuario) {
-      this.usuarioForm.patchValue({
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
-        username: usuario.username,
-        email: usuario.email,
-        celular: usuario.celular,
-        rol: usuario.rol,
-        password: ''
+    if (this.currentSection === 'usuarios') {
+      this.http.get<Usuario[]>(`${this.API_URL}/usuarios`).subscribe(data => {
+        this.usuarios = data;
+        this.usuariosFiltrados = data;
+        this.loading = false;
       });
-      // Deshabilitar todos los campos excepto rol
-      this.usuarioForm.get('nombre')?.disable();
-      this.usuarioForm.get('apellido')?.disable();
-      this.usuarioForm.get('username')?.disable();
-      this.usuarioForm.get('email')?.disable();
-      this.usuarioForm.get('celular')?.disable();
-      this.usuarioForm.get('password')?.disable();
-      this.usuarioForm.get('rol')?.enable();
+    } else if (this.currentSection === 'productos') {
+      this.http.get<Producto[]>(`${this.API_URL}/productos`).subscribe(data => {
+        this.productos = data;
+        this.loading = false;
+      });
     } else {
-      this.usuarioForm.reset({ rol: 'Comprador' });
-      this.usuarioForm.enable();
-    }
-    
-    this.showModal = true;
-  }
-
-  saveUsuario() {
-    if (this.usuarioForm.valid) {
-      const formData = this.usuarioForm.value;
-      
-      if (this.modalType === 'create') {
-        // Crear nuevo usuario
-        const newUsuario = {
-          id: this.usuarios.length + 1,
-          ...formData
-        };
-        this.usuarios.push(newUsuario);
-      } else {
-        // Editar usuario existente
-        const index = this.usuarios.findIndex(u => u.id === this.selectedItem.id);
-        if (index !== -1) {
-          this.usuarios[index] = { ...this.selectedItem, ...formData };
-        }
-      }
-      
-      this.closeModal();
+      this.loading = false;
     }
   }
 
-  deleteUsuario(usuario: Usuario) {
-    if (confirm(`¿Estás seguro de eliminar al usuario ${usuario.nombre} ${usuario.apellido}?`)) {
-      this.usuarios = this.usuarios.filter(u => u.id !== usuario.id);
+  filtrarUsuarios(event: Event) {
+    const termino = (event.target as HTMLInputElement).value.toLowerCase();
+    if (!termino) {
+      this.usuariosFiltrados = [...this.usuarios];
+      return;
     }
+
+    this.usuariosFiltrados = this.usuarios.filter(u => 
+      u.nombre.toLowerCase().includes(termino) ||
+      u.apellido.toLowerCase().includes(termino) ||
+      u.email.toLowerCase().includes(termino)
+    );
   }
 
-  // CRUD Productos
-  loadProductos() {
-    // Simular datos de productos
-    this.productos = [
-      { id: 1, nombre: 'Nike Air Max 270', precio: 129.99, categoria: 'Calzado', descripcion: 'Zapatillas deportivas de alta calidad', imagen: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop', stock: 15, activo: true },
-      { id: 2, nombre: 'Adidas Ultraboost 22', precio: 179.99, categoria: 'Calzado', descripcion: 'Zapatillas para running profesionales', imagen: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&h=400&fit=crop', stock: 8, activo: true },
-      { id: 3, nombre: 'Under Armour Tech 2.0', precio: 89.99, categoria: 'Ropa', descripcion: 'Camiseta deportiva de alto rendimiento', imagen: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop', stock: 25, activo: true }
-    ];
-  }
-
-  openProductoModal(type: 'create' | 'edit', producto?: Producto) {
+  openProductoModal(type: 'create' | 'edit' | 'delete', producto?: Producto) {
     this.modalType = type;
     this.selectedItem = producto;
     
@@ -238,26 +181,21 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  async saveProducto() {
-    if (this.productoForm.valid) {
-      let imagenUrl = this.productoForm.value.imagen;
-      if (this.selectedFile) {
-        const formDataImg = new FormData();
-        formDataImg.append('imagen', this.selectedFile);
-        const uploadResp: any = await this.http.post('/api/productos/upload', formDataImg).toPromise();
-        imagenUrl = uploadResp.imageUrl;
-      }
-      const formData = { ...this.productoForm.value, imagen: imagenUrl };
-      if (this.modalType === 'create') {
-        await this.http.post('/api/productos', formData).toPromise();
-      } else {
-        // Lógica de edición si aplica
-      }
-      this.closeModal();
-      this.loadProductos();
-      this.selectedFile = null;
-      this.imagenPreview = null;
+  saveProducto() {
+    if (this.productoForm.invalid) {
+      return;
     }
+
+    const productoData: Producto = this.productoForm.value;
+    
+    const saveObservable = this.modalType === 'create'
+      ? this.http.post(`${this.API_URL}/productos`, productoData)
+      : this.http.put(`${this.API_URL}/productos/${this.selectedItem.id}`, productoData);
+
+    saveObservable.subscribe(() => {
+      this.closeModal();
+      this.loadSectionData();
+    });
   }
 
   deleteProducto(producto: Producto) {
@@ -273,24 +211,13 @@ export class AdminComponent implements OnInit {
   // Utilidades
   closeModal() {
     this.showModal = false;
-    this.selectedItem = null;
-    this.usuarioForm.reset({ rol: 'Comprador' });
     this.productoForm.reset({ activo: true });
+    this.imagenPreview = null;
+    this.selectedFile = null;
   }
 
-  getEstadoColor(estado: string): string {
-    switch (estado) {
-      case 'Pendiente': return 'bg-yellow-100 text-yellow-800';
-      case 'En proceso': return 'bg-blue-100 text-blue-800';
-      case 'Enviado': return 'bg-purple-100 text-purple-800';
-      case 'Entregado': return 'bg-green-100 text-green-800';
-      case 'Cancelado': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  getRolColor(rol: string): string {
-    return rol === 'Administrador' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800';
+  getEstadoColor(estado: boolean): string {
+    return estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
   }
 
   agregarCategoria() {

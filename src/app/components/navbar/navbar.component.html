@@ -1,101 +1,93 @@
-<nav class="bg-gray-900 shadow-lg sticky top-0 z-50">
+<nav class="bg-theme-surface shadow-md sticky top-0 z-30">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
+    <div class="flex items-center justify-between h-20">
+      
       <!-- Logo -->
-      <a routerLink="/" class="flex items-center space-x-2">
-        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-          <i class="fas fa-dumbbell text-white text-xl"></i>
-        </div>
-        <span class="text-2xl font-bold text-white">SportFlex</span>
+      <a routerLink="/" class="flex-shrink-0 flex items-center space-x-2">
+        <i class="fas fa-running text-3xl text-theme-primary"></i>
+        <span class="text-2xl font-bold text-theme-text">SportFlex</span>
       </a>
 
-      <!-- Desktop Navigation -->
+      <!-- Links de navegación (Desktop) -->
       <div class="hidden md:flex items-center space-x-8">
-        <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{exact: true}" class="text-gray-300 hover:text-blue-400 transition-colors duration-200">Inicio</a>
-        <a routerLink="/productos" routerLinkActive="text-blue-400" class="text-gray-300 hover:text-blue-400 transition-colors duration-200">Productos</a>
-        <a routerLink="/acerca-de-nosotros" routerLinkActive="text-blue-400" class="text-gray-300 hover:text-blue-400 transition-colors duration-200">Nosotros</a>
-        <a routerLink="/contacto" routerLinkActive="text-blue-400" class="text-gray-300 hover:text-blue-400 transition-colors duration-200">Contacto</a>
+        <a routerLink="/" routerLinkActive="text-theme-primary" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Inicio</a>
+        <a routerLink="/productos" routerLinkActive="text-theme-primary" class="nav-link">Productos</a>
+        <a routerLink="/acerca-de-nosotros" routerLinkActive="text-theme-primary" class="nav-link">Nosotros</a>
+        <a routerLink="/contacto" routerLinkActive="text-theme-primary" class="nav-link">Contacto</a>
       </div>
 
-      <!-- Right side icons & User Menu -->
-      <div class="hidden md:flex items-center space-x-4">
-        <app-theme-selector></app-theme-selector>
-        <button class="text-gray-300 hover:text-blue-400"><i class="fas fa-search text-lg"></i></button>
-        <button (click)="abrirCarrito()" class="text-gray-300 hover:text-blue-400 relative">
-          <i class="fas fa-shopping-cart text-lg"></i>
-          <span *ngIf="cantidadCarrito > 0" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{{ cantidadCarrito }}</span>
-        </button>
-
-        <!-- User Menu -->
-        <div class="relative" *ngIf="usuario; else loginButton" appClickOutside (clickOutside)="showUserMenu = false">
-          <button (click)="toggleUserMenu()" class="flex items-center space-x-2 text-gray-300 hover:text-blue-400">
-            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-              <i class="fas fa-user"></i>
-            </span>
-            <span>{{ usuario.username }}</span>
-            <i class="fas fa-chevron-down text-xs transition-transform duration-200" [class.rotate-180]="showUserMenu"></i>
+      <!-- Iconos y menú de usuario (Desktop y Móvil) -->
+      <div class="flex items-center space-x-4">
+        <div class="hidden md:flex items-center space-x-4">
+          <app-theme-selector></app-theme-selector>
+          <button class="text-theme-text-secondary hover:text-theme-primary transition-colors">
+            <i class="fas fa-search"></i>
           </button>
-          <div *ngIf="showUserMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-gray-800">
-            <a (click)="openEditProfile()" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Editar Perfil</a>
-            <a *ngIf="usuario.rol === 'Administrador'" routerLink="/admin" class="block px-4 py-2 text-sm hover:bg-gray-100">Admin</a>
-            <a (click)="logout()" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Cerrar Sesión</a>
-          </div>
         </div>
-        <ng-template #loginButton>
-          <button (click)="openRegisterModal()" class="text-gray-300 hover:text-blue-400">Mi Cuenta</button>
-        </ng-template>
-      </div>
 
-      <!-- Mobile menu button -->
-      <div class="md:hidden flex items-center space-x-4">
-        <button (click)="abrirCarrito()" class="text-gray-300 hover:text-blue-400 relative">
-          <i class="fas fa-shopping-cart text-lg"></i>
-          <span *ngIf="cantidadCarrito > 0" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{{ cantidadCarrito }}</span>
+        <button (click)="toggleCart()" class="relative text-theme-text-secondary hover:text-theme-primary transition-colors">
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <ng-container *ngIf="estadoCarrito$ | async as estado">
+            <span *ngIf="estado.cantidadTotal > 0" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {{ estado.cantidadTotal }}
+            </span>
+          </ng-container>
         </button>
-        <button (click)="toggleMenu()" class="text-gray-300 hover:text-blue-400">
+
+        <!-- Menú de Usuario (Desktop) -->
+        <div class="hidden md:block">
+          <div *ngIf="usuario$ | async as usuario; else loginButtonDesktop" class="relative" (appClickOutside)="showUserMenu = false">
+            <button (click)="toggleUserMenu()" class="flex items-center space-x-2">
+              <span class="font-medium text-theme-text">{{ usuario.nombre | slice:0:10 }}</span>
+              <i class="fas fa-chevron-down text-xs"></i>
+            </button>
+            <div *ngIf="showUserMenu" class="absolute right-0 mt-2 w-48 bg-theme-surface rounded-md shadow-lg py-1 z-20">
+              <a (click)="openEditProfile()" class="block px-4 py-2 text-sm text-theme-text hover:bg-theme-background">Editar Perfil</a>
+              <a *ngIf="usuario.rol.toLowerCase() === 'administrador'" routerLink="/admin" class="block px-4 py-2 text-sm text-theme-text hover:bg-theme-background">Admin Panel</a>
+              <a (click)="logout()" class="block px-4 py-2 text-sm text-theme-text hover:bg-theme-background">Cerrar Sesión</a>
+            </div>
+          </div>
+          <ng-template #loginButtonDesktop>
+            <button (click)="openRegisterModal()" class="text-theme-text font-medium hover:text-theme-primary">
+              <i class="fas fa-user-circle mr-1"></i> Iniciar Sesión
+            </button>
+          </ng-template>
+        </div>
+
+        <!-- Botón menú móvil -->
+        <button (click)="toggleMenu()" class="md:hidden text-theme-text-secondary hover:text-theme-primary">
           <i class="fas fa-bars text-xl"></i>
         </button>
       </div>
+
     </div>
   </div>
 
-  <!-- Mobile menu -->
-  <div class="md:hidden" [class.hidden]="!menuOpen">
+  <!-- Menú desplegable (Móvil) -->
+  <div *ngIf="menuOpen" class="md:hidden bg-theme-surface border-t border-theme-border">
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-      <a routerLink="/" (click)="closeMenu()" routerLinkActive="bg-gray-800 text-white" [routerLinkActiveOptions]="{exact: true}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Inicio</a>
-      <a routerLink="/productos" (click)="closeMenu()" routerLinkActive="bg-gray-800 text-white" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Productos</a>
-      <a routerLink="/acerca-de-nosotros" (click)="closeMenu()" routerLinkActive="bg-gray-800 text-white" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Nosotros</a>
-      <a routerLink="/contacto" (click)="closeMenu()" routerLinkActive="bg-gray-800 text-white" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Contacto</a>
+      <a routerLink="/" (click)="closeMenu()" class="mobile-nav-link">Inicio</a>
+      <a routerLink="/productos" (click)="closeMenu()" class="mobile-nav-link">Productos</a>
+      <a routerLink="/acerca-de-nosotros" (click)="closeMenu()" class="mobile-nav-link">Nosotros</a>
+      <a routerLink="/contacto" (click)="closeMenu()" class="mobile-nav-link">Contacto</a>
+      
       <div class="border-t border-gray-700 my-2"></div>
-      <!-- Mobile User Menu -->
-      <div *ngIf="usuario; else mobileLoginButton" class="px-2 py-2">
-        <div class="flex items-center space-x-3 mb-2">
-          <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white">
-            <i class="fas fa-user"></i>
-          </span>
-          <span class="font-medium text-white">{{ usuario.username }}</span>
-        </div>
-        <a (click)="openEditProfile(); closeMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 cursor-pointer">Editar Perfil</a>
-        <a *ngIf="usuario.rol === 'Administrador'" (click)="closeMenu()" routerLink="/admin" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700">Admin</a>
-        <a (click)="logout(); closeMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 cursor-pointer">Cerrar Sesión</a>
+      
+      <!-- Menú de usuario Móvil -->
+      <div *ngIf="usuario$ | async as usuario; else mobileLoginButton">
+        <a (click)="openEditProfile(); closeMenu()" class="mobile-nav-link">Editar Perfil</a>
+        <a *ngIf="usuario.rol.toLowerCase() === 'administrador'" routerLink="/admin" (click)="closeMenu()" class="mobile-nav-link">Admin Panel</a>
+        <a (click)="logout(); closeMenu()" class="mobile-nav-link">Cerrar Sesión</a>
       </div>
       <ng-template #mobileLoginButton>
-        <a (click)="openRegisterModal(); closeMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 cursor-pointer">Mi Cuenta</a>
+        <a (click)="openRegisterModal(); closeMenu()" class="mobile-nav-link">
+          <i class="fas fa-user-circle mr-2"></i> Iniciar Sesión
+        </a>
       </ng-template>
     </div>
   </div>
 </nav>
 
-<!-- Modals and Cart -->
+<!-- Modales -->
 <app-register-modal *ngIf="showRegisterModal" (close)="closeRegisterModal()"></app-register-modal>
-<app-edit-profile *ngIf="showEditProfile" (close)="closeEditProfile()"></app-edit-profile>
-<!-- Carrito (puedes moverlo a su propio componente si lo deseas) -->
-<div *ngIf="showCarrito" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50" (click)="cerrarCarrito()">
-  <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm text-gray-900" (click)="$event.stopPropagation()">
-      <div class="flex justify-between items-center border-b pb-3 mb-4">
-          <h2 class="text-xl font-bold">Carrito</h2>
-          <button (click)="cerrarCarrito()" class="text-gray-400 hover:text-gray-700">&times;</button>
-      </div>
-      <!-- Contenido del carrito -->
-  </div>
-</div> 
+<app-edit-profile *ngIf="showEditProfile" (onClose)="closeEditProfile()"></app-edit-profile> 

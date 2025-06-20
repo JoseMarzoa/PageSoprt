@@ -1,14 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-
-interface Usuario {
-  id: number;
-  username: string;
-  email: string;
-  rol: string;
-  fechaRegistro?: string;
-}
+import { AuthService, Usuario } from '../../services/auth.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-profile',
@@ -16,108 +9,81 @@ interface Usuario {
   styleUrls: ['./edit-profile.component.css']
 })
 export class EditProfileComponent implements OnInit {
+  @Output() onClose = new EventEmitter<void>();
+
+  profileForm: FormGroup;
   usuario: Usuario | null = null;
-  editForm: FormGroup;
-  isEditing = false;
   isSaving = false;
-  showPassword = false;
-  showConfirmPassword = false;
-  showSuccessMessage = false;
-  showErrorMessage = false;
+  successMessage = '';
   errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService
   ) {
-    this.editForm = this.fb.group({
-      username: ['', [Validators.required]],
+    this.profileForm = this.fb.group({
+      nombre: ['', Validators.required],
+      apellido: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(6)]],
+      celular: ['', Validators.required],
+      password: [''],
       confirmPassword: ['']
     }, { validators: this.passwordMatchValidator });
   }
 
-  ngOnInit() {
-    this.loadUserData();
-  }
-
-  loadUserData() {
-    const userData = localStorage.getItem('usuario');
-    if (userData) {
-      this.usuario = JSON.parse(userData);
-      this.editForm.patchValue({
-        username: this.usuario?.username || '',
-        email: this.usuario?.email || ''
-      });
-    }
+  ngOnInit(): void {
+    this.authService.usuario$.subscribe(user => {
+      this.usuario = user;
+      if (this.usuario) {
+        this.profileForm.patchValue(this.usuario);
+      }
+    });
   }
 
   passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirmPassword');
-    
-    if (password?.value && confirmPassword?.value && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    if (password && confirmPassword && password !== confirmPassword) {
       return { passwordMismatch: true };
     }
-    
     return null;
   }
 
-  startEditing() {
-    this.isEditing = true;
-    this.showSuccessMessage = false;
-    this.showErrorMessage = false;
-  }
-
-  cancelEditing() {
-    this.isEditing = false;
-    this.loadUserData(); // Reset form to original values
-    this.showPassword = false;
-    this.showConfirmPassword = false;
-  }
-
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
-  }
-
-  toggleConfirmPasswordVisibility() {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  saveChanges() {
-    if (this.editForm.valid && !this.isSaving) {
-      this.isSaving = true;
-      this.showSuccessMessage = false;
-      this.showErrorMessage = false;
-
-      const formData = this.editForm.value;
-      
-      // Simular actualización
-      setTimeout(() => {
-        if (this.usuario) {
-          // Actualizar datos del usuario
-          this.usuario.username = formData.username;
-          this.usuario.email = formData.email;
-          
-          // Guardar en localStorage
-          localStorage.setItem('usuario', JSON.stringify(this.usuario));
-          
-          this.isEditing = false;
-          this.isSaving = false;
-          this.showSuccessMessage = true;
-          
-          // Ocultar mensaje de éxito después de 3 segundos
-          setTimeout(() => {
-            this.showSuccessMessage = false;
-          }, 3000);
-        }
-      }, 1000);
-    } else {
-      this.showErrorMessage = true;
-      this.errorMessage = 'Por favor, corrige los errores en el formulario';
-      this.isSaving = false;
+  saveChanges(): void {
+    if (this.profileForm.invalid || this.isSaving || !this.usuario) {
+      return;
     }
+
+    this.isSaving = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    const { nombre, apellido, username, email, celular, password } = this.profileForm.value;
+    const updatePayload: Partial<Usuario> = {
+      id: this.usuario!.id,
+      nombre, apellido, username, email, celular
+    };
+
+    if (password) {
+      updatePayload.password = password;
+    }
+
+    this.authService.actualizarPerfil(updatePayload)
+      .pipe(finalize(() => this.isSaving = false))
+      .subscribe({
+        next: (res) => {
+          this.authService.setUsuario(res.user);
+          this.successMessage = '¡Perfil actualizado con éxito!';
+          setTimeout(() => this.close(), 2000);
+        },
+        error: (err) => {
+          this.errorMessage = err.error?.error || 'Hubo un error al actualizar el perfil.';
+        }
+      });
+  }
+
+  close(): void {
+    this.onClose.emit();
   }
 } 

@@ -1,7 +1,12 @@
-<div class="min-h-screen bg-gray-50">
+<div class="flex flex-col min-h-screen bg-theme-background">
   <app-navbar></app-navbar>
-  <main>
+
+  <main class="flex-grow">
     <router-outlet></router-outlet>
   </main>
+  
   <app-footer></app-footer>
-</div> 
+</div>
+
+<!-- El componente del carrito vive fuera del flujo principal para poder superponerse -->
+<app-cart #cart></app-cart> 

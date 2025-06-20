@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Producto } from '../models/producto.model';
 
-export interface ProductoCarrito {
-  id: number;
-  nombre: string;
-  precio: number;
-  imagen: string;
+export interface ProductoCarrito extends Producto {
   cantidad: number;
-  stock: number;
+}
+
+export interface EstadoCarrito {
+  items: ProductoCarrito[];
+  cantidadTotal: number;
+  subtotal: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class CarritoService {
   private carritoSubject = new BehaviorSubject<ProductoCarrito[]>(this.obtenerCarritoLocal());
-  carrito$ = this.carritoSubject.asObservable();
+  
+  public estadoCarrito$: Observable<EstadoCarrito> = this.carritoSubject.asObservable().pipe(
+    map(items => {
+      const cantidadTotal = items.reduce((total, item) => total + item.cantidad, 0);
+      const subtotal = items.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+      return { items, cantidadTotal, subtotal };
+    })
+  );
 
   private obtenerCarritoLocal(): ProductoCarrito[] {
     return JSON.parse(localStorage.getItem('carrito') || '[]');
@@ -31,7 +40,8 @@ export class CarritoService {
     let carrito = this.obtenerCarrito();
     const idx = carrito.findIndex(p => p.id === producto.id);
     if (idx > -1) {
-      carrito[idx].cantidad += producto.cantidad;
+      const cantidadPotencial = carrito[idx].cantidad + producto.cantidad;
+      carrito[idx].cantidad = Math.min(cantidadPotencial, carrito[idx].stock);
     } else {
       carrito.push(producto);
     }
